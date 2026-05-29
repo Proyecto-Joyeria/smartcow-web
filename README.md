@@ -251,4 +251,4 @@ La documentación completa del proyecto se encuentra en el repositorio [`smartco
 
 ## 📝 Licencia
 
-Proyecto personal — SmartCow Tracker © 2026
+Proyecto — SmartCow Tracker © 2026
