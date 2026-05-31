@@ -2,12 +2,18 @@ import { apiClient, TOKEN_STORAGE_KEY } from './api.client';
 import type {
   LoginCredentials,
   LoginResponse,
+  RegisterCredentials,
   TwoFASetupResponse,
   TwoFAVerifyRequest,
   User,
 } from '@/types/auth.types';
 
 export const authService = {
+  register: async (credentials: RegisterCredentials): Promise<LoginResponse> => {
+    const { data } = await apiClient.post<LoginResponse>('/auth/register', credentials);
+    return data;
+  },
+
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     const { data } = await apiClient.post<LoginResponse>('/auth/login', credentials);
     return data;

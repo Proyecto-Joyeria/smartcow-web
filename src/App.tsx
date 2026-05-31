@@ -4,6 +4,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AppShell } from '@/components/layout/AppShell';
 import { LoginPage } from '@/features/login';
+import { RegisterPage } from '@/features/register';
 import { DashboardPage } from '@/features/dashboard';
 import { TwoFASetup } from '@/features/login/components/TwoFASetup';
 
@@ -20,6 +21,7 @@ export function App() {
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/"
               element={

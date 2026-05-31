@@ -1,8 +1,8 @@
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LoginForm } from './components/LoginForm';
+import { RegisterForm } from './components/RegisterForm';
 
-export function LoginPage() {
+export function RegisterPage() {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
@@ -12,13 +12,13 @@ export function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-display text-primary mb-1">SmartCow</h1>
-          <p className="text-secondary text-body">Gestión inteligente de ganado</p>
+          <p className="text-secondary text-body">Crea tu cuenta para comenzar</p>
         </div>
-        <LoginForm />
+        <RegisterForm />
         <p className="text-center text-small text-secondary mt-4">
-          ¿No tienes cuenta?{' '}
-          <Link to="/register" className="text-brand hover:underline">
-            Regístrate
+          ¿Ya tienes cuenta?{' '}
+          <Link to="/login" className="text-brand hover:underline">
+            Inicia sesión
           </Link>
         </p>
       </div>
