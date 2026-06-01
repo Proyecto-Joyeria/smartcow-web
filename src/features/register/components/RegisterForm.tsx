@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services/auth.service';
-import { TOKEN_STORAGE_KEY } from '@/services/api.client';
 import { cn } from '@/utils/cn';
 
 const registerSchema = z
@@ -49,8 +48,16 @@ function Field({ id, label, error, children }: FieldProps) {
   );
 }
 
+function getRegisterError(err: unknown): string {
+  const status = (err as { response?: { status?: number } }).response?.status;
+  if (status === 409) return 'Este email ya está registrado. Prueba con otro o inicia sesión.';
+  if (status === 422) return 'Algunos datos no son válidos. Revisa los campos e intenta de nuevo.';
+  if (!status)        return 'No se pudo conectar al servidor. Verifica tu conexión e intenta de nuevo.';
+  return 'Error al crear la cuenta. Intenta de nuevo más tarde.';
+}
+
 export function RegisterForm() {
-  const { login } = useAuth();
+  const { authenticate } = useAuth();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
 
@@ -64,11 +71,10 @@ export function RegisterForm() {
     setServerError('');
     try {
       const response = await authService.register({ name, farmName, email, password });
-      localStorage.setItem(TOKEN_STORAGE_KEY, response.accessToken);
-      await login({ email, password });
+      authenticate(response.accessToken, response.user);
       navigate('/dashboard');
-    } catch {
-      setServerError('No se pudo crear la cuenta. Verifica los datos e intenta de nuevo.');
+    } catch (err) {
+      setServerError(getRegisterError(err));
     }
   };
 

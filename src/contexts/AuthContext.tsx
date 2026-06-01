@@ -9,6 +9,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<{ requiresTwoFactor?: boolean }>;
+  authenticate: (token: string, user: User) => void;
   logout: () => void;
   userRole: UserRole | null;
 }
@@ -43,6 +44,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return { requiresTwoFactor: response.requiresTwoFactor };
   };
 
+  const authenticate = (token: string, user: User) => {
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    setUser(user);
+  };
+
   const logout = () => {
     authService.logout();
     setUser(null);
@@ -55,6 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated: !!user,
         isLoading,
         login,
+        authenticate,
         logout,
         userRole: user?.role ?? null,
       }}
