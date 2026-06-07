@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+@import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
 @tailwind components;
@@ -26,3 +27,20 @@
     min-height: 100vh;
   }
 }
+
+@layer utilities {
+  .animate-ping-slow   { animation: ping 2s   cubic-bezier(0,0,0.2,1) infinite; }
+  .animate-ping-medium { animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+  .animate-ping-fast   { animation: ping 1s   cubic-bezier(0,0,0.2,1) infinite; }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes flash-bg {
+  0%, 100% { background-color: transparent; }
+  50%       { background-color: rgba(255, 179, 0, 0.15); }
+}
+
+.animate-flash { animation: flash-bg 300ms ease-in-out; }

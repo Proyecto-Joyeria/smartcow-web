@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react';
 import { ResponsiveContainer, LineChart, Line } from 'recharts';
 import { cn } from '@/utils/cn';
 import type { VitalReading } from '@/types/animal.types';
@@ -15,10 +16,28 @@ const TREND_COLOR: Record<VitalReading['trend'], string> = {
 };
 
 export function VitalCard({ label, reading, className }: VitalCardProps) {
+  const prevValue  = useRef(reading.value);
+  const [flash, setFlash] = useState(false);
+
+  useEffect(() => {
+    if (reading.value !== prevValue.current) {
+      prevValue.current = reading.value;
+      setFlash(true);
+      const id = setTimeout(() => setFlash(false), 300);
+      return () => clearTimeout(id);
+    }
+  }, [reading.value]);
+
   const sparkData = reading.history.map((v, i) => ({ i, v }));
 
   return (
-    <div className={cn('bg-surface-elevated rounded-lg p-3 flex flex-col gap-1', className)}>
+    <div
+      className={cn(
+        'bg-surface-elevated rounded-lg p-3 flex flex-col gap-1 transition-colors',
+        flash && 'animate-flash',
+        className,
+      )}
+    >
       <p className="text-small text-secondary">{label}</p>
       <div className="flex items-end justify-between gap-2">
         <div>
