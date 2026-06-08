@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import type { HealthStatus, AnimalVitals } from '@/types/animal.types';
@@ -59,8 +59,10 @@ const gpsSlice = createSlice({
 export const { updateAnimalPosition, updateAnimalVitals, clearPositions } = gpsSlice.actions;
 export const gpsReducer = gpsSlice.reducer;
 
-export const selectAllPositions = (state: RootState) =>
-  Object.values(state.gps.positions);
+export const selectAllPositions = createSelector(
+  (state: RootState) => state.gps.positions,
+  positions => Object.values(positions),
+);
 
 export const selectAnimalPosition = (id: string) => (state: RootState) =>
   state.gps.positions[id];

@@ -5,9 +5,10 @@ import { cn } from '@/utils/cn';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { VitalCard } from '@/components/charts/VitalCard';
 import { animalsService } from '@/services/animals.service';
+import { useAnimalVitals } from '@/hooks/useAnimalVitals';
 import type { AnimalVitals } from '@/types/animal.types';
 
-const STATIC_VITALS: AnimalVitals = {
+const FALLBACK_VITALS: AnimalVitals = {
   temperature: { value: 38.5, unit: '°C',  trend: '↔', history: [38.2, 38.4, 38.5, 38.3, 38.5] },
   heartRate:   { value: 72,   unit: 'bpm', trend: '↓', history: [75, 74, 73, 72, 72]             },
   activity:    { value: 6.2,  unit: 'km',  trend: '↑', history: [4.1, 5.0, 5.8, 6.0, 6.2]       },
@@ -26,6 +27,9 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
     queryFn:  () => animalsService.getById(animalId!),
     enabled:  !!animalId,
   });
+
+  const liveVitals = useAnimalVitals(animalId ?? '');
+  const vitals = liveVitals ?? FALLBACK_VITALS;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -119,10 +123,10 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
               <div>
                 <p className="text-small text-secondary mb-2">Signos vitales</p>
                 <div className="grid grid-cols-2 gap-3">
-                  <VitalCard label="Temperatura"    reading={STATIC_VITALS.temperature} />
-                  <VitalCard label="Ritmo cardíaco" reading={STATIC_VITALS.heartRate}   />
-                  <VitalCard label="Actividad"      reading={STATIC_VITALS.activity}    />
-                  <VitalCard label="Batería sensor" reading={STATIC_VITALS.battery}     />
+                  <VitalCard label="Temperatura"    reading={vitals.temperature} />
+                  <VitalCard label="Ritmo cardíaco" reading={vitals.heartRate}   />
+                  <VitalCard label="Actividad"      reading={vitals.activity}    />
+                  <VitalCard label="Batería sensor" reading={vitals.battery}     />
                 </div>
               </div>
 
