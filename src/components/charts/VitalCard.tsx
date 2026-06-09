@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from 'react';
-import { ResponsiveContainer, LineChart, Line } from 'recharts';
 import { cn } from '@/utils/cn';
 import type { VitalReading } from '@/types/animal.types';
 
@@ -15,8 +14,43 @@ const TREND_COLOR: Record<VitalReading['trend'], string> = {
   '↔': 'text-status-ok',
 };
 
+function Sparkline({ data }: { data: number[] }) {
+  if (data.length < 2) return null;
+  const min   = Math.min(...data);
+  const max   = Math.max(...data);
+  const range = max - min || 1;
+  const W = 100;
+  const H = 32;
+
+  const points = data
+    .map((v, i) => {
+      const x = (i / (data.length - 1)) * W;
+      const y = H - ((v - min) / range) * H * 0.9 - H * 0.05;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="w-full h-full"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke="#1a7a4a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function VitalCard({ label, reading, className }: VitalCardProps) {
-  const prevValue  = useRef(reading.value);
+  const prevValue      = useRef(reading.value);
   const [flash, setFlash] = useState(false);
 
   useEffect(() => {
@@ -27,8 +61,6 @@ export function VitalCard({ label, reading, className }: VitalCardProps) {
       return () => clearTimeout(id);
     }
   }, [reading.value]);
-
-  const sparkData = reading.history.map((v, i) => ({ i, v }));
 
   return (
     <div
@@ -52,18 +84,7 @@ export function VitalCard({ label, reading, className }: VitalCardProps) {
         </span>
       </div>
       <div className="h-10 -mx-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={sparkData}>
-            <Line
-              type="monotone"
-              dataKey="v"
-              stroke="#1a7a4a"
-              strokeWidth={1.5}
-              dot={false}
-              isAnimationActive={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <Sparkline data={reading.history} />
       </div>
     </div>
   );

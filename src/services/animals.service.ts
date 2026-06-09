@@ -7,6 +7,8 @@ import type {
   HealthStatus,
 } from '@/types/animal.types';
 
+interface ApiEnvelope<T> { data: T; }
+
 export interface GetAnimalsParams {
   search?: string;
   status?: HealthStatus;
@@ -25,19 +27,29 @@ export interface ImportResult {
 
 export const animalsService = {
   getAll: (params?: GetAnimalsParams): Promise<AnimalSummary[]> =>
-    apiClient.get<AnimalSummary[]>('/animals', { params }).then(r => r.data),
+    apiClient
+      .get<ApiEnvelope<AnimalSummary[]>>('/animals', { params })
+      .then(r => r.data.data),
 
   getById: (id: string): Promise<AnimalDetail> =>
-    apiClient.get<AnimalDetail>(`/animals/${id}`).then(r => r.data),
+    apiClient
+      .get<ApiEnvelope<AnimalDetail>>(`/animals/${id}`)
+      .then(r => r.data.data),
 
   getVitals: (id: string): Promise<AnimalVitals> =>
-    apiClient.get<AnimalVitals>(`/animals/${id}/vitals`).then(r => r.data),
+    apiClient
+      .get<ApiEnvelope<AnimalVitals>>(`/animals/${id}/vitals`)
+      .then(r => r.data.data),
 
   create: (data: CreateAnimalDto): Promise<AnimalDetail> =>
-    apiClient.post<AnimalDetail>('/animals', data).then(r => r.data),
+    apiClient
+      .post<ApiEnvelope<AnimalDetail>>('/animals', data)
+      .then(r => r.data.data),
 
   update: (id: string, data: Partial<CreateAnimalDto>): Promise<AnimalDetail> =>
-    apiClient.patch<AnimalDetail>(`/animals/${id}`, data).then(r => r.data),
+    apiClient
+      .patch<ApiEnvelope<AnimalDetail>>(`/animals/${id}`, data)
+      .then(r => r.data.data),
 
   remove: (id: string): Promise<void> =>
     apiClient.delete(`/animals/${id}`).then(() => undefined),
@@ -46,17 +58,17 @@ export const animalsService = {
     const form = new FormData();
     form.append('photo', file);
     return apiClient
-      .patch<AnimalDetail>(`/animals/${id}/photo`, form, {
+      .patch<ApiEnvelope<AnimalDetail>>(`/animals/${id}/photo`, form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(r => r.data);
+      .then(r => r.data.data);
   },
 
   importCSV: (file: File, onProgress?: (pct: number) => void): Promise<ImportResult> => {
     const form = new FormData();
     form.append('file', file);
     return apiClient
-      .post<ImportResult>('/animals/import', form, {
+      .post<ApiEnvelope<ImportResult>>('/animals/import', form, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (e) => {
           if (onProgress && e.total) {
@@ -64,6 +76,6 @@ export const animalsService = {
           }
         },
       })
-      .then(r => r.data);
+      .then(r => r.data.data);
   },
 };

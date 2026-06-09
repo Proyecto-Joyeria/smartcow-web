@@ -15,6 +15,19 @@ const FALLBACK_VITALS: AnimalVitals = {
   battery:     { value: 87,   unit: '%',   trend: '↓', history: [95, 93, 91, 89, 87]             },
 };
 
+function LiveVitalsSection({ animalId }: { animalId: string }) {
+  const liveVitals = useAnimalVitals(animalId);
+  const vitals     = liveVitals ?? FALLBACK_VITALS;
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <VitalCard label="Temperatura"    reading={vitals.temperature} />
+      <VitalCard label="Ritmo cardíaco" reading={vitals.heartRate}   />
+      <VitalCard label="Actividad"      reading={vitals.activity}    />
+      <VitalCard label="Batería sensor" reading={vitals.battery}     />
+    </div>
+  );
+}
+
 interface CattleDetailProps {
   animalId: string | null;
   onClose:  () => void;
@@ -27,9 +40,6 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
     queryFn:  () => animalsService.getById(animalId!),
     enabled:  !!animalId,
   });
-
-  const liveVitals = useAnimalVitals(animalId ?? '');
-  const vitals = liveVitals ?? FALLBACK_VITALS;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -119,15 +129,10 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
                 </p>
               </div>
 
-              {/* Vitals 2×2 */}
+              {/* Vitals 2×2 — solo monta cuando hay animal, evita socket innecesario */}
               <div>
                 <p className="text-small text-secondary mb-2">Signos vitales</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <VitalCard label="Temperatura"    reading={vitals.temperature} />
-                  <VitalCard label="Ritmo cardíaco" reading={vitals.heartRate}   />
-                  <VitalCard label="Actividad"      reading={vitals.activity}    />
-                  <VitalCard label="Batería sensor" reading={vitals.battery}     />
-                </div>
+                <LiveVitalsSection animalId={animal.id} />
               </div>
 
               {/* Technical data */}

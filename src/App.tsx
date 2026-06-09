@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AppShell } from '@/components/layout/AppShell';
 import { LoginPage } from '@/features/login';
@@ -33,9 +34,9 @@ export function App() {
               }
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<DashboardPage />} />
-              <Route path="cattle"    element={<CattlePage />}   />
-              <Route path="map"       element={<MapPage />}      />
+              <Route path="dashboard" element={<ErrorBoundary><DashboardPage /></ErrorBoundary>} />
+              <Route path="cattle"    element={<ErrorBoundary><CattlePage /></ErrorBoundary>} />
+              <Route path="map"       element={<ErrorBoundary><MapPage /></ErrorBoundary>}    />
               <Route path="2fa-setup" element={<TwoFASetup />} />
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
