@@ -8,15 +8,21 @@ import type {
   User,
 } from '@/types/auth.types';
 
+// El backend envuelve toda respuesta exitosa en { data: <resultado> }.
+// Este tipo lo modela para desenvolverlo de forma consistente.
+interface ApiEnvelope<T> {
+  data: T;
+}
+
 export const authService = {
   register: async (credentials: RegisterCredentials): Promise<LoginResponse> => {
-    const { data } = await apiClient.post<LoginResponse>('/auth/register', credentials);
-    return data;
+    const { data } = await apiClient.post<ApiEnvelope<LoginResponse>>('/auth/register', credentials);
+    return data.data;
   },
 
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const { data } = await apiClient.post<LoginResponse>('/auth/login', credentials);
-    return data;
+    const { data } = await apiClient.post<ApiEnvelope<LoginResponse>>('/auth/login', credentials);
+    return data.data;
   },
 
   logout: (): void => {
@@ -24,8 +30,8 @@ export const authService = {
   },
 
   setup2FA: async (): Promise<TwoFASetupResponse> => {
-    const { data } = await apiClient.post<TwoFASetupResponse>('/auth/2fa/setup');
-    return data;
+    const { data } = await apiClient.post<ApiEnvelope<TwoFASetupResponse>>('/auth/2fa/setup');
+    return data.data;
   },
 
   verify2FA: async (payload: TwoFAVerifyRequest): Promise<void> => {
@@ -33,7 +39,7 @@ export const authService = {
   },
 
   getMe: async (): Promise<User> => {
-    const { data } = await apiClient.get<User>('/auth/me');
-    return data;
+    const { data } = await apiClient.get<ApiEnvelope<User>>('/auth/me');
+    return data.data;
   },
 };
