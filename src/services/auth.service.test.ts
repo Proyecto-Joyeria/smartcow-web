@@ -28,7 +28,7 @@ beforeEach(() => {
 describe('authService.login', () => {
   it('retorna la respuesta del servidor al hacer login', async () => {
     const mockResponse = { accessToken: 'tok-123', user: mockUser };
-    vi.mocked(apiClient.post).mockResolvedValueOnce({ data: mockResponse });
+    vi.mocked(apiClient.post).mockResolvedValueOnce({ data: { data: mockResponse } });
 
     const result = await authService.login({ email: 'test@example.com', password: 'password123' });
 
@@ -58,7 +58,7 @@ describe('authService.logout', () => {
 
 describe('authService.getMe', () => {
   it('retorna el usuario autenticado desde la API', async () => {
-    vi.mocked(apiClient.get).mockResolvedValueOnce({ data: mockUser });
+    vi.mocked(apiClient.get).mockResolvedValueOnce({ data: { data: mockUser } });
 
     const result = await authService.getMe();
 

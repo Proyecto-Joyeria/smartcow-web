@@ -3,18 +3,30 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { gpsReducer } from '@/store/slices/gpsSlice';
 import { MapPage } from '@/features/map';
 
-// ---- Mocks ----------------------------------------------------------------
+// ---- Mocks ------------------------------------------------------------------
 
 vi.mock('@/hooks/useGpsSubscription', () => ({
   useGpsSubscription: vi.fn(),
 }));
 
+vi.mock('@/hooks/useGeofenceEvents', () => ({
+  useGeofenceEvents: vi.fn(),
+}));
+
 vi.mock('@/hooks/useWebSocket', () => ({
   useWebSocket: () => ({ on: vi.fn(), off: vi.fn(), emit: vi.fn() }),
 }));
+
+vi.mock('@/services/geofences.service', () => ({
+  geofencesService: { getAll: vi.fn().mockResolvedValue([]) },
+}));
+
+vi.mock('leaflet-draw', () => ({}));
+vi.mock('leaflet-draw/dist/leaflet.draw.css', () => ({}));
 
 // Avoid JSX in factory (hoisted before jsx-runtime is available)
 vi.mock('react-leaflet', () => ({
@@ -26,6 +38,12 @@ vi.mock('react-leaflet', () => ({
   Popup:      ({ children }: { children?: React.ReactNode }) =>
     React.createElement('div', null, children),
   Polyline:   () => null,
+  Polygon:    () => null,
+  useMap:     () => ({
+    addLayer: vi.fn(), removeLayer: vi.fn(),
+    addControl: vi.fn(), removeControl: vi.fn(),
+    on: vi.fn(), off: vi.fn(),
+  }),
 }));
 
 vi.mock('leaflet', () => ({
@@ -54,10 +72,14 @@ function makeStore() {
 }
 
 function renderMapPage() {
-  const store = makeStore();
+  const store  = makeStore();
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
-    React.createElement(Provider, { store },
-      React.createElement(MapPage),
+    React.createElement(
+      QueryClientProvider, { client },
+      React.createElement(Provider, { store },
+        React.createElement(MapPage),
+      ),
     ),
   );
 }

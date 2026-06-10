@@ -1,18 +1,30 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { AnimalMarkerLayer } from '@/components/map/AnimalMarkerLayer';
 import { RouteHistory }      from '@/components/map/RouteHistory';
+import { GeofenceLayer }     from '@/components/map/GeofenceLayer';
 import type { HealthStatus } from '@/types/animal.types';
+import type { Geofence }     from '@/types/geofence.types';
 
 const MAP_CENTER: [number, number] = [4.7110, -74.0721];
 const MAP_ZOOM = 13;
 
 interface MapViewProps {
-  activeStatuses:  Set<HealthStatus>;
+  activeStatuses:   Set<HealthStatus>;
   selectedAnimalId: string | null;
-  onMarkerSelect:  (animalId: string) => void;
+  geofences:        Geofence[];
+  drawingMode:      boolean;
+  onMarkerSelect:   (animalId: string) => void;
+  onPolygonCreated: (vertices: [number, number][]) => void;
 }
 
-export function MapView({ activeStatuses, selectedAnimalId, onMarkerSelect }: MapViewProps) {
+export function MapView({
+  activeStatuses,
+  selectedAnimalId,
+  geofences,
+  drawingMode,
+  onMarkerSelect,
+  onPolygonCreated,
+}: MapViewProps) {
   return (
     <MapContainer
       center={MAP_CENTER}
@@ -23,6 +35,11 @@ export function MapView({ activeStatuses, selectedAnimalId, onMarkerSelect }: Ma
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      />
+      <GeofenceLayer
+        geofences={geofences}
+        drawingMode={drawingMode}
+        onPolygonCreated={onPolygonCreated}
       />
       <AnimalMarkerLayer
         activeStatuses={activeStatuses}
