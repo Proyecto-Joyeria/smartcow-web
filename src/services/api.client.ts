@@ -16,7 +16,17 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
-    const status = (error as { response?: { status?: number } }).response?.status;
+    const axiosError = error as any;
+    const status = axiosError?.response?.status;
+    const message = axiosError?.response?.data?.message || axiosError?.message;
+    
+    console.error('🔴 API Error:', {
+      status,
+      message,
+      data: axiosError?.response?.data,
+      config: axiosError?.config?.url,
+    });
+    
     if (status === 401) {
       localStorage.removeItem(TOKEN_STORAGE_KEY);
       window.location.replace('/login');

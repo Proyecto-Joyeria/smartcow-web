@@ -125,7 +125,7 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
                   <p className="text-small text-secondary font-mono">{animal.code}</p>
                 )}
                 <p className="text-small text-secondary">
-                  {animal.breed} · {animal.sex === 'FEMALE' ? 'Hembra' : 'Macho'}
+                  {animal.breed} · {animal.sex === 'F' ? 'Hembra' : 'Macho'}
                 </p>
               </div>
 

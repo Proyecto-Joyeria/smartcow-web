@@ -12,7 +12,7 @@ const animalSchema = z.object({
   code:         z.string().min(1, 'El código es requerido'),
   name:         z.string().optional(),
   breed:        z.string().min(1, 'La raza es requerida'),
-  sex:          z.enum(['MALE', 'FEMALE']),
+  sex:          z.enum(['M', 'F']),
   healthStatus: z.enum(['HEALTHY', 'WARNING', 'CRITICAL', 'OFFLINE', 'PREGNANT']),
   birthDate:    z.string().optional(),
   weight:       z.preprocess(
@@ -77,7 +77,7 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
           deviceId:     initialData.deviceId ?? '',
           notes:        initialData.notes ?? '',
         }
-      : { healthStatus: 'HEALTHY', sex: 'FEMALE' },
+      : { healthStatus: 'HEALTHY', sex: 'F' },
   });
 
   const mutation = useMutation({
@@ -88,11 +88,14 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
         breed:        values.breed,
         sex:          values.sex,
         healthStatus: values.healthStatus,
-        birthDate:    values.birthDate  || undefined,
-        weight:       values.weight,
+        birthDate:    values.birthDate 
+          ? new Date(values.birthDate).toISOString()
+          : undefined,
+        weight:       values.weight !== undefined ? Number(values.weight) : undefined,
         deviceId:     values.deviceId   || undefined,
         notes:        values.notes      || undefined,
       };
+      console.log('📤 Enviando datos al servidor:', JSON.stringify(dto, null, 2));
       return isEdit
         ? animalsService.update(initialData.id, dto)
         : animalsService.create(dto);
@@ -100,6 +103,10 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['animals'] });
       onClose();
+    },
+    onError: (error: any) => {
+      console.error('❌ Error registrando animal:', error);
+      console.error('📨 Response data:', (error as any)?.response?.data);
     },
   });
 
@@ -172,8 +179,8 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
                 {...register('sex')}
                 className={cn(INPUT_BASE, 'border-border cursor-pointer')}
               >
-                <option value="FEMALE">Hembra</option>
-                <option value="MALE">Macho</option>
+                <option value="F">Hembra</option>
+                <option value="M">Macho</option>
               </select>
             </Field>
           </div>
@@ -238,9 +245,15 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
           </Field>
 
           {mutation.isError && (
-            <p role="alert" className="text-small text-status-critical text-center">
-              Error al guardar. Intenta de nuevo.
-            </p>
+            <div role="alert" className="text-small text-status-critical bg-status-critical/10 border border-status-critical/20 rounded p-3">
+              <p className="font-medium">Error al guardar:</p>
+              <p className="text-xs mt-1">
+                {(mutation.error as any)?.response?.data?.message ||
+                 (mutation.error as any)?.response?.data?.error ||
+                 (mutation.error as any)?.message ||
+                 'Datos inválidos. Revisa los campos.'}
+              </p>
+            </div>
           )}
 
           <div className="flex gap-3 pb-2">

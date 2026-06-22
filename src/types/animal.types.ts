@@ -1,5 +1,5 @@
 export type HealthStatus = 'HEALTHY' | 'WARNING' | 'CRITICAL' | 'OFFLINE' | 'PREGNANT';
-export type AnimalSex    = 'MALE' | 'FEMALE';
+export type AnimalSex    = 'M' | 'F';
 
 export interface AnimalSummary {
   id:           string;

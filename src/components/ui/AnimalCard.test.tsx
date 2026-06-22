@@ -8,7 +8,7 @@ const mockAnimal: AnimalSummary = {
   code:         'TAG-001',
   name:         'Estrella',
   breed:        'Holstein',
-  sex:          'FEMALE',
+  sex:          'F',
   healthStatus: 'HEALTHY',
 };
 
@@ -16,7 +16,7 @@ const mockAnimalNoName: AnimalSummary = {
   id:           'a2',
   code:         'TAG-002',
   breed:        'Angus',
-  sex:          'MALE',
+  sex:          'M',
   healthStatus: 'WARNING',
 };
 
