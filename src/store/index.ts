@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { gpsReducer } from './slices/gpsSlice';
+import { gpsReducer }    from './slices/gpsSlice';
+import { alertsReducer } from './slices/alertsSlice';
 
 export const store = configureStore({
   reducer: {
-    gps: gpsReducer,
+    gps:    gpsReducer,
+    alerts: alertsReducer,
   },
 });
 

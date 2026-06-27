@@ -9,7 +9,8 @@ import { LoginPage } from '@/features/login';
 import { RegisterPage } from '@/features/register';
 import { DashboardPage } from '@/features/dashboard';
 import { CattlePage } from '@/features/cattle';
-import { MapPage }    from '@/features/map';
+import { MapPage }          from '@/features/map';
+import { AlertCenterPage }  from '@/features/alerts';
 import { TwoFASetup } from '@/features/login/components/TwoFASetup';
 
 const queryClient = new QueryClient({
@@ -38,7 +39,8 @@ export function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<ErrorBoundary><DashboardPage /></ErrorBoundary>} />
                 <Route path="cattle"    element={<ErrorBoundary><CattlePage /></ErrorBoundary>} />
-                <Route path="map"       element={<ErrorBoundary><MapPage /></ErrorBoundary>}    />
+                <Route path="map"       element={<ErrorBoundary><MapPage /></ErrorBoundary>}           />
+                <Route path="alerts"    element={<ErrorBoundary><AlertCenterPage /></ErrorBoundary>} />
                 <Route path="2fa-setup" element={<TwoFASetup />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -1,9 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import { Sidebar } from './Sidebar';
-import { Header } from './Header';
+import { Sidebar }  from './Sidebar';
+import { Header }   from './Header';
 import { BottomNav } from './BottomNav';
+import { useAlertsSubscription } from '@/hooks/useAlertsSubscription';
 
 export function AppShell() {
+  useAlertsSubscription();
+
   return (
     <div className="min-h-screen bg-surface-primary flex flex-col">
       <Header />
