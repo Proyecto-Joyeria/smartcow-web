@@ -8,10 +8,10 @@ import { GeofenceModal }  from './components/GeofenceModal';
 import { useGpsSubscription }   from '@/hooks/useGpsSubscription';
 import { useGeofenceEvents }    from '@/hooks/useGeofenceEvents';
 import { geofencesService }     from '@/services/geofences.service';
-import type { HealthStatus }    from '@/types/animal.types';
+import type { LiveStatus }      from '@/store/slices/gpsSlice';
 import type { Geofence }        from '@/types/geofence.types';
 
-const ALL_STATUSES = new Set<HealthStatus>([
+const ALL_STATUSES = new Set<LiveStatus>([
   'HEALTHY', 'WARNING', 'CRITICAL', 'OFFLINE', 'PREGNANT',
 ]);
 
@@ -24,7 +24,7 @@ export function MapPage() {
   useGpsSubscription();
   useGeofenceEvents();
 
-  const [activeStatuses,   setActiveStatuses]   = useState<Set<HealthStatus>>(ALL_STATUSES);
+  const [activeStatuses,   setActiveStatuses]   = useState<Set<LiveStatus>>(ALL_STATUSES);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
   const [panelOpen,        setPanelOpen]        = useState(false);
   const [drawingMode,      setDrawingMode]       = useState(false);

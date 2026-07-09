@@ -2,8 +2,7 @@ import { memo } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { cn } from '@/utils/cn';
-import type { GPSPosition } from '@/store/slices/gpsSlice';
-import type { HealthStatus } from '@/types/animal.types';
+import type { GPSPosition, LiveStatus } from '@/store/slices/gpsSlice';
 
 interface MarkerConfig {
   size:      number;
@@ -12,7 +11,7 @@ interface MarkerConfig {
   opacity:   number;
 }
 
-const MARKER_CONFIG: Record<HealthStatus, MarkerConfig> = {
+const MARKER_CONFIG: Record<LiveStatus, MarkerConfig> = {
   HEALTHY:  { size: 14, color: '#4caf50', ringClass: 'animate-ping-slow',   opacity: 1   },
   WARNING:  { size: 14, color: '#ffb300', ringClass: 'animate-ping-medium', opacity: 1   },
   CRITICAL: { size: 16, color: '#f44336', ringClass: 'animate-ping-fast',   opacity: 1   },
@@ -20,7 +19,7 @@ const MARKER_CONFIG: Record<HealthStatus, MarkerConfig> = {
   PREGNANT: { size: 14, color: '#ce93d8', ringClass: '',                    opacity: 1   },
 };
 
-function createDivIcon(cfg: MarkerConfig, status: HealthStatus): L.DivIcon {
+function createDivIcon(cfg: MarkerConfig, status: LiveStatus): L.DivIcon {
   const hasRing = cfg.ringClass !== '';
   const zIndex  = status === 'CRITICAL' ? 'z-[1000]' : 'z-[500]';
 
@@ -56,7 +55,7 @@ export const AnimalMarker = memo(
     const cfg  = MARKER_CONFIG[position.status];
     const icon = createDivIcon(cfg, position.status);
 
-    const statusLabel: Record<HealthStatus, string> = {
+    const statusLabel: Record<LiveStatus, string> = {
       HEALTHY:  'Sano',
       WARNING:  'Alerta',
       CRITICAL: 'Crítico',

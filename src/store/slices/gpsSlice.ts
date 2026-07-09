@@ -1,16 +1,20 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
-import type { HealthStatus, AnimalVitals } from '@/types/animal.types';
+import type { AnimalVitals } from '@/types/animal.types';
 
 const MAX_HISTORY = 20;
+
+/** Estado en vivo del marcador en el mapa (salud + conectividad del collar), distinto del
+ * healthStatus clínico persistido en el backend. */
+export type LiveStatus = 'HEALTHY' | 'WARNING' | 'CRITICAL' | 'OFFLINE' | 'PREGNANT';
 
 export interface GPSPosition {
   animalId: string;
   lat:      number;
   lng:      number;
   ts:       string;
-  status:   HealthStatus;
+  status:   LiveStatus;
   name?:    string;
 }
 
@@ -73,5 +77,5 @@ export const selectRouteHistory = (id: string) => (state: RootState) =>
 export const selectAnimalVitals = (id: string) => (state: RootState) =>
   state.gps.vitals[id] ?? null;
 
-export const selectPositionsByStatus = (status: HealthStatus) => (state: RootState) =>
+export const selectPositionsByStatus = (status: LiveStatus) => (state: RootState) =>
   Object.values(state.gps.positions).filter(p => p.status === status);

@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 import { Polyline } from 'react-leaflet';
 import { selectRouteHistory } from '@/store/slices/gpsSlice';
 import type { RootState } from '@/store';
-import type { HealthStatus } from '@/types/animal.types';
+import type { LiveStatus } from '@/store/slices/gpsSlice';
 
-const ROUTE_COLOR: Record<HealthStatus, string> = {
+const ROUTE_COLOR: Record<LiveStatus, string> = {
   HEALTHY:  '#4caf50',
   WARNING:  '#ffb300',
   CRITICAL: '#f44336',
@@ -14,7 +14,7 @@ const ROUTE_COLOR: Record<HealthStatus, string> = {
 
 interface RouteHistoryProps {
   animalId: string;
-  status:   HealthStatus;
+  status:   LiveStatus;
 }
 
 export function RouteHistory({ animalId, status }: RouteHistoryProps) {

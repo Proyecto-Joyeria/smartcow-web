@@ -6,20 +6,36 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import { animalsService } from '@/services/animals.service';
 import { cn } from '@/utils/cn';
-import type { AnimalDetail, CreateAnimalDto } from '@/types/animal.types';
+import { BREED_LABELS } from '@/types/animal.types';
+import type { AnimalDetail, CreateAnimalDto, HealthStatus } from '@/types/animal.types';
+
+const BREED_OPTIONS = Object.entries(BREED_LABELS).map(([value, label]) => ({ value, label }));
+
+const HEALTH_STATUS_OPTIONS: Array<{ value: HealthStatus; label: string }> = [
+  { value: 'HEALTHY',           label: 'Sano'            },
+  { value: 'SICK',              label: 'Enfermo'         },
+  { value: 'RECOVERING',        label: 'En recuperación' },
+  { value: 'UNDER_OBSERVATION', label: 'En observación'  },
+  { value: 'CRITICAL',          label: 'Crítico'         },
+];
 
 const animalSchema = z.object({
-  code:         z.string().min(1, 'El código es requerido'),
+  code:         z.string()
+    .min(1, 'El código es requerido')
+    .max(30, 'El código no puede superar 30 caracteres')
+    .regex(/^[a-zA-Z0-9-]+$/, 'El código solo puede contener letras, números y guiones'),
   name:         z.string().optional(),
-  breed:        z.string().min(1, 'La raza es requerida'),
+  breed:        z.enum(['BRAHMAN', 'HOLSTEIN', 'ANGUS', 'SIMMENTAL', 'CEBUINO', 'OTRO'], {
+    errorMap: () => ({ message: 'La raza es requerida' }),
+  }),
   sex:          z.enum(['M', 'F']),
-  healthStatus: z.enum(['HEALTHY', 'WARNING', 'CRITICAL', 'OFFLINE', 'PREGNANT']),
+  healthStatus: z.enum(['HEALTHY', 'SICK', 'RECOVERING', 'UNDER_OBSERVATION', 'CRITICAL']),
   birthDate:    z.string().optional(),
-  weight:       z.preprocess(
+  weightKg:     z.preprocess(
     (v) => (v === '' || v === undefined || v === null ? undefined : Number(v)),
-    z.number().positive('Debe ser mayor a 0').optional(),
+    z.number().min(10, 'Peso mínimo 10 kg').max(2000, 'Peso máximo 2000 kg').optional(),
   ),
-  deviceId:     z.string().optional(),
+  areteNumber:  z.string().max(30, 'Máximo 30 caracteres').optional(),
   notes:        z.string().max(500, 'Máximo 500 caracteres').optional(),
 });
 
@@ -73,8 +89,8 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
           sex:          initialData.sex,
           healthStatus: initialData.healthStatus,
           birthDate:    initialData.birthDate ?? '',
-          weight:       initialData.weight,
-          deviceId:     initialData.deviceId ?? '',
+          weightKg:     initialData.weightKg,
+          areteNumber:  initialData.areteNumber ?? '',
           notes:        initialData.notes ?? '',
         }
       : { healthStatus: 'HEALTHY', sex: 'F' },
@@ -83,19 +99,18 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
   const mutation = useMutation({
     mutationFn: (values: AnimalFormValues) => {
       const dto: CreateAnimalDto = {
-        code:         values.code,
+        code:         values.code.toUpperCase(),
         name:         values.name      || undefined,
         breed:        values.breed,
         sex:          values.sex,
         healthStatus: values.healthStatus,
-        birthDate:    values.birthDate 
+        birthDate:    values.birthDate
           ? new Date(values.birthDate).toISOString()
           : undefined,
-        weight:       values.weight !== undefined ? Number(values.weight) : undefined,
-        deviceId:     values.deviceId   || undefined,
+        weightKg:     values.weightKg !== undefined ? Number(values.weightKg) : undefined,
+        areteNumber:  values.areteNumber || undefined,
         notes:        values.notes      || undefined,
       };
-      console.log('📤 Enviando datos al servidor:', JSON.stringify(dto, null, 2));
       return isEdit
         ? animalsService.update(initialData.id, dto)
         : animalsService.create(dto);
@@ -103,10 +118,6 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['animals'] });
       onClose();
-    },
-    onError: (error: any) => {
-      console.error('❌ Error registrando animal:', error);
-      console.error('📨 Response data:', (error as any)?.response?.data);
     },
   });
 
@@ -164,14 +175,18 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <Field id="breed" label="Raza *" error={errors.breed?.message}>
-              <input
+              <select
                 id="breed"
-                type="text"
                 aria-invalid={!!errors.breed}
                 aria-describedby={errors.breed ? 'breed-error' : undefined}
                 {...register('breed')}
-                className={cn(INPUT_BASE, errors.breed ? 'border-status-critical' : 'border-border')}
-              />
+                className={cn(INPUT_BASE, 'cursor-pointer', errors.breed ? 'border-status-critical' : 'border-border')}
+              >
+                <option value="">Selecciona una raza</option>
+                {BREED_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </Field>
             <Field id="sex" label="Sexo *" error={errors.sex?.message}>
               <select
@@ -192,11 +207,9 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
                 {...register('healthStatus')}
                 className={cn(INPUT_BASE, 'border-border cursor-pointer')}
               >
-                <option value="HEALTHY">Sano</option>
-                <option value="WARNING">Alerta</option>
-                <option value="CRITICAL">Crítico</option>
-                <option value="OFFLINE">Sin señal</option>
-                <option value="PREGNANT">Gestante</option>
+                {HEALTH_STATUS_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </Field>
             <Field id="birthDate" label="Fecha nacimiento" error={errors.birthDate?.message}>
@@ -211,23 +224,24 @@ export function AnimalForm({ initialData, onClose }: AnimalFormProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Field id="weight" label="Peso (kg)" error={errors.weight?.message}>
+            <Field id="weightKg" label="Peso (kg)" error={errors.weightKg?.message}>
               <input
-                id="weight"
+                id="weightKg"
                 type="number"
-                min="0"
+                min="10"
+                max="2000"
                 step="0.1"
-                aria-invalid={!!errors.weight}
-                aria-describedby={errors.weight ? 'weight-error' : undefined}
-                {...register('weight')}
-                className={cn(INPUT_BASE, errors.weight ? 'border-status-critical' : 'border-border')}
+                aria-invalid={!!errors.weightKg}
+                aria-describedby={errors.weightKg ? 'weightKg-error' : undefined}
+                {...register('weightKg')}
+                className={cn(INPUT_BASE, errors.weightKg ? 'border-status-critical' : 'border-border')}
               />
             </Field>
-            <Field id="deviceId" label="ID dispositivo" error={errors.deviceId?.message}>
+            <Field id="areteNumber" label="Número de arete" error={errors.areteNumber?.message}>
               <input
-                id="deviceId"
+                id="areteNumber"
                 type="text"
-                {...register('deviceId')}
+                {...register('areteNumber')}
                 className={cn(INPUT_BASE, 'border-border font-mono')}
               />
             </Field>

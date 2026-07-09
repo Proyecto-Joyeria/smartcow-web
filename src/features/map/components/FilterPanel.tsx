@@ -1,12 +1,12 @@
 import { cn } from '@/utils/cn';
-import type { HealthStatus } from '@/types/animal.types';
+import type { LiveStatus } from '@/store/slices/gpsSlice';
 
 interface FilterPanelProps {
-  activeStatuses: Set<HealthStatus>;
-  onChange:       (statuses: Set<HealthStatus>) => void;
+  activeStatuses: Set<LiveStatus>;
+  onChange:       (statuses: Set<LiveStatus>) => void;
 }
 
-const FILTERS: Array<{ status: HealthStatus; label: string; color: string }> = [
+const FILTERS: Array<{ status: LiveStatus; label: string; color: string }> = [
   { status: 'HEALTHY',  label: 'Sanos',     color: 'bg-green-500'  },
   { status: 'WARNING',  label: 'Alerta',    color: 'bg-yellow-500' },
   { status: 'CRITICAL', label: 'Críticos',  color: 'bg-red-500'    },
@@ -15,7 +15,7 @@ const FILTERS: Array<{ status: HealthStatus; label: string; color: string }> = [
 ];
 
 export function FilterPanel({ activeStatuses, onChange }: FilterPanelProps) {
-  const toggle = (status: HealthStatus) => {
+  const toggle = (status: LiveStatus) => {
     const next = new Set(activeStatuses);
     if (next.has(status)) {
       next.delete(status);

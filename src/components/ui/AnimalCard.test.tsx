@@ -7,7 +7,7 @@ const mockAnimal: AnimalSummary = {
   id:           'a1',
   code:         'TAG-001',
   name:         'Estrella',
-  breed:        'Holstein',
+  breed:        'HOLSTEIN',
   sex:          'F',
   healthStatus: 'HEALTHY',
 };
@@ -15,9 +15,9 @@ const mockAnimal: AnimalSummary = {
 const mockAnimalNoName: AnimalSummary = {
   id:           'a2',
   code:         'TAG-002',
-  breed:        'Angus',
+  breed:        'ANGUS',
   sex:          'M',
-  healthStatus: 'WARNING',
+  healthStatus: 'SICK',
 };
 
 describe('AnimalCard', () => {

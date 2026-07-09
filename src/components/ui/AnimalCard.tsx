@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { cn } from '@/utils/cn';
 import { StatusBadge } from './StatusBadge';
+import { BREED_LABELS } from '@/types/animal.types';
 import type { AnimalSummary } from '@/types/animal.types';
 
 interface AnimalCardProps {
@@ -41,7 +42,7 @@ export const AnimalCard = memo(function AnimalCard({
           {animal.name && (
             <p className="text-small text-secondary font-mono">{animal.code}</p>
           )}
-          <p className="text-small text-secondary">{animal.breed}</p>
+          <p className="text-small text-secondary">{BREED_LABELS[animal.breed]}</p>
         </div>
         <StatusBadge status={animal.healthStatus} />
       </div>

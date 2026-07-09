@@ -1,4 +1,4 @@
-import { CheckCircle, AlertTriangle, AlertOctagon, WifiOff, Heart } from 'lucide-react';
+import { CheckCircle, AlertTriangle, AlertOctagon, Stethoscope, Eye } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import type { HealthStatus } from '@/types/animal.types';
 
@@ -11,11 +11,11 @@ const BADGE_CONFIG: Record<
   HealthStatus,
   { label: string; icon: React.ElementType; className: string }
 > = {
-  HEALTHY:  { label: 'Sana',      icon: CheckCircle,   className: 'bg-green-900/20 text-green-400'   },
-  WARNING:  { label: 'Alerta',    icon: AlertTriangle,  className: 'bg-yellow-900/20 text-yellow-400' },
-  CRITICAL: { label: 'Crítico',   icon: AlertOctagon,   className: 'bg-red-900/20 text-red-400'       },
-  OFFLINE:  { label: 'Sin señal', icon: WifiOff,        className: 'bg-gray-800 text-gray-400'        },
-  PREGNANT: { label: 'Gestante',  icon: Heart,          className: 'bg-purple-900/20 text-purple-300' },
+  HEALTHY:           { label: 'Sana',            icon: CheckCircle,  className: 'bg-green-900/20 text-green-400'   },
+  SICK:              { label: 'Enferma',         icon: AlertTriangle, className: 'bg-yellow-900/20 text-yellow-400' },
+  RECOVERING:        { label: 'En recuperación', icon: Stethoscope,  className: 'bg-blue-900/20 text-blue-400'     },
+  UNDER_OBSERVATION: { label: 'En observación',  icon: Eye,          className: 'bg-purple-900/20 text-purple-300' },
+  CRITICAL:          { label: 'Crítico',         icon: AlertOctagon, className: 'bg-red-900/20 text-red-400'       },
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {

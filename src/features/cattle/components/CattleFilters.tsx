@@ -14,12 +14,12 @@ interface CattleFiltersProps {
 }
 
 const STATUS_OPTIONS: Array<{ value: HealthStatus | ''; label: string }> = [
-  { value: '',         label: 'Todos'     },
-  { value: 'HEALTHY',  label: 'Sanos'     },
-  { value: 'WARNING',  label: 'En alerta' },
-  { value: 'CRITICAL', label: 'Críticos'  },
-  { value: 'OFFLINE',  label: 'Sin señal' },
-  { value: 'PREGNANT', label: 'Gestantes' },
+  { value: '',                   label: 'Todos'            },
+  { value: 'HEALTHY',            label: 'Sanos'            },
+  { value: 'SICK',               label: 'Enfermos'         },
+  { value: 'RECOVERING',         label: 'En recuperación'  },
+  { value: 'UNDER_OBSERVATION',  label: 'En observación'   },
+  { value: 'CRITICAL',           label: 'Críticos'         },
 ];
 
 const INPUT_BASE =

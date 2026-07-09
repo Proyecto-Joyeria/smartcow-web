@@ -2,14 +2,14 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { AnimalMarkerLayer } from '@/components/map/AnimalMarkerLayer';
 import { RouteHistory }      from '@/components/map/RouteHistory';
 import { GeofenceLayer }     from '@/components/map/GeofenceLayer';
-import type { HealthStatus } from '@/types/animal.types';
+import type { LiveStatus }   from '@/store/slices/gpsSlice';
 import type { Geofence }     from '@/types/geofence.types';
 
 const MAP_CENTER: [number, number] = [4.7110, -74.0721];
 const MAP_ZOOM = 13;
 
 interface MapViewProps {
-  activeStatuses:   Set<HealthStatus>;
+  activeStatuses:   Set<LiveStatus>;
   selectedAnimalId: string | null;
   geofences:        Geofence[];
   drawingMode:      boolean;

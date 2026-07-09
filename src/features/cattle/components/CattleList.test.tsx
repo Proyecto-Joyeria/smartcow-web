@@ -8,7 +8,7 @@ const mockAnimals: AnimalSummary[] = [
     id:           'a1',
     code:         'TAG-001',
     name:         'Estrella',
-    breed:        'Holstein',
+    breed:        'HOLSTEIN',
     sex:          'F',
     healthStatus: 'HEALTHY',
   },
@@ -16,9 +16,9 @@ const mockAnimals: AnimalSummary[] = [
     id:           'a2',
     code:         'TAG-002',
     name:         'Luna',
-    breed:        'Angus',
+    breed:        'ANGUS',
     sex:          'F',
-    healthStatus: 'WARNING',
+    healthStatus: 'SICK',
   },
 ];
 

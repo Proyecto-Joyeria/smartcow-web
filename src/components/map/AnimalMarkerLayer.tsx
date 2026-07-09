@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { AnimalMarker } from './AnimalMarker';
 import { selectAllPositions } from '@/store/slices/gpsSlice';
-import type { HealthStatus } from '@/types/animal.types';
+import type { LiveStatus } from '@/store/slices/gpsSlice';
 
 interface AnimalMarkerLayerProps {
-  activeStatuses: Set<HealthStatus>;
+  activeStatuses: Set<LiveStatus>;
   onMarkerSelect: (animalId: string) => void;
 }
 

@@ -6,6 +6,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { VitalCard } from '@/components/charts/VitalCard';
 import { animalsService } from '@/services/animals.service';
 import { useAnimalVitals } from '@/hooks/useAnimalVitals';
+import { BREED_LABELS } from '@/types/animal.types';
 import type { AnimalVitals } from '@/types/animal.types';
 
 const FALLBACK_VITALS: AnimalVitals = {
@@ -125,7 +126,7 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
                   <p className="text-small text-secondary font-mono">{animal.code}</p>
                 )}
                 <p className="text-small text-secondary">
-                  {animal.breed} · {animal.sex === 'F' ? 'Hembra' : 'Macho'}
+                  {BREED_LABELS[animal.breed]} · {animal.sex === 'F' ? 'Hembra' : 'Macho'}
                 </p>
               </div>
 
@@ -138,10 +139,10 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
               {/* Technical data */}
               <div className="bg-surface-elevated rounded-lg p-3 flex flex-col gap-2">
                 <p className="text-small text-secondary font-medium">Datos técnicos</p>
-                {animal.weight !== undefined && (
+                {animal.weightKg !== undefined && (
                   <div className="flex justify-between">
                     <span className="text-small text-secondary">Peso</span>
-                    <span className="text-small text-primary">{animal.weight} kg</span>
+                    <span className="text-small text-primary">{animal.weightKg} kg</span>
                   </div>
                 )}
                 {animal.birthDate && (
@@ -152,10 +153,10 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
                     </span>
                   </div>
                 )}
-                {animal.deviceId && (
+                {animal.areteNumber && (
                   <div className="flex justify-between">
-                    <span className="text-small text-secondary">Dispositivo</span>
-                    <span className="text-small text-primary font-mono">{animal.deviceId}</span>
+                    <span className="text-small text-secondary">N.º de arete</span>
+                    <span className="text-small text-primary font-mono">{animal.areteNumber}</span>
                   </div>
                 )}
                 {animal.lastSeen && (
