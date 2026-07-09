@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Activity, Bell } from 'lucide-react';
+import { LayoutDashboard, Map, Activity, Bell, BarChart2 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/map',       icon: Map,             label: 'Mapa GPS'  },
-  { to: '/cattle',    icon: Activity,         label: 'Ganado'    },
+  { to: '/cattle',    icon: Activity,        label: 'Ganado'    },
   { to: '/alerts',    icon: Bell,            label: 'Alertas'   },
+  { to: '/analytics', icon: BarChart2,       label: 'Análisis'  },
 ] as const;
 
 export function Sidebar() {

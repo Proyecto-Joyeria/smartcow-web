@@ -8,6 +8,7 @@ import { animalsService } from '@/services/animals.service';
 import { useAnimalVitals } from '@/hooks/useAnimalVitals';
 import { BREED_LABELS } from '@/types/animal.types';
 import type { AnimalVitals } from '@/types/animal.types';
+import { PredictionCard } from '@/components/charts/PredictionCard';
 
 const FALLBACK_VITALS: AnimalVitals = {
   temperature: { value: 38.5, unit: '°C',  trend: '↔', history: [38.2, 38.4, 38.5, 38.3, 38.5] },
@@ -168,6 +169,9 @@ export function CattleDetail({ animalId, onClose, onEdit }: CattleDetailProps) {
                   </div>
                 )}
               </div>
+
+              {/* AI risk prediction */}
+              <PredictionCard animalId={animal.id} />
 
               {animal.notes && (
                 <div className="bg-surface-elevated rounded-lg p-3">

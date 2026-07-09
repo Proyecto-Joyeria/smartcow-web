@@ -11,6 +11,7 @@ import { DashboardPage } from '@/features/dashboard';
 import { CattlePage } from '@/features/cattle';
 import { MapPage }          from '@/features/map';
 import { AlertCenterPage }  from '@/features/alerts';
+import { AnalyticsPage }    from '@/features/analytics';
 import { TwoFASetup } from '@/features/login/components/TwoFASetup';
 
 const queryClient = new QueryClient({
@@ -40,7 +41,8 @@ export function App() {
                 <Route path="dashboard" element={<ErrorBoundary><DashboardPage /></ErrorBoundary>} />
                 <Route path="cattle"    element={<ErrorBoundary><CattlePage /></ErrorBoundary>} />
                 <Route path="map"       element={<ErrorBoundary><MapPage /></ErrorBoundary>}           />
-                <Route path="alerts"    element={<ErrorBoundary><AlertCenterPage /></ErrorBoundary>} />
+                <Route path="alerts"    element={<ErrorBoundary><AlertCenterPage /></ErrorBoundary>}  />
+                <Route path="analytics" element={<ErrorBoundary><AnalyticsPage /></ErrorBoundary>}   />
                 <Route path="2fa-setup" element={<TwoFASetup />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
